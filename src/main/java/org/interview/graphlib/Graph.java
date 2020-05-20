@@ -15,7 +15,6 @@ public interface Graph<T extends Comparable<T>> {
      */
     Graph<T> addVertex(Vertex<T> vertex);
 
-
     /**
      * Adds edge to the graph
      *

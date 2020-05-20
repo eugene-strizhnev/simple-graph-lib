@@ -1,6 +1,7 @@
 package org.interview.graphlib;
 
-import org.interview.graphlib.impl.GraphImpl;
+import org.interview.graphlib.impl.DirectedGraph;
+import org.interview.graphlib.impl.UndirectedGraph;
 import org.interview.graphlib.model.Edge;
 import org.interview.graphlib.model.Vertex;
 
@@ -15,7 +16,7 @@ public class Graphs {
      * @return the newly created thread pool
      */
     public static <T extends Comparable<T>> Graph<T> newDirectedGraph() {
-        return new GraphImpl<>(Graphs::directedEdgeEnhancer);
+        return new DirectedGraph<>();
     }
 
     /**
@@ -25,7 +26,7 @@ public class Graphs {
      * @return the newly created graph
      */
     public static <T extends Comparable<T>> Graph<T> newUndirectedGraph() {
-        return new GraphImpl<>(Graphs::unDirectedEdgeEnhancer);
+        return new UndirectedGraph<>();
     }
 
     /**
@@ -48,16 +49,6 @@ public class Graphs {
         return new ThreadSafeGraph<>(Graphs.<T>newUndirectedGraph());
     }
 
-    private static <T extends Comparable<T>> List<Edge<T>> directedEdgeEnhancer(Edge<T> edge) {
-        return List.of(edge);
-    }
-
-    private static <T extends Comparable<T>> List<Edge<T>> unDirectedEdgeEnhancer(Edge<T> edge) {
-        return List.of(
-                edge,
-                new Edge<>(edge.getEnd(), edge.getStart())
-        );
-    }
 
     private static class ThreadSafeGraph<T extends Comparable<T>> implements Graph<T> {
         private final Graph<T> graph;
@@ -79,7 +70,7 @@ public class Graphs {
         }
 
         @Override
-        public List<Edge<T>> getPath(Vertex<T> start, Vertex<T> end) {
+        public synchronized List<Edge<T>> getPath(Vertex<T> start, Vertex<T> end) {
             return graph.getPath(start, end);
         }
     }
